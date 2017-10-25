@@ -1,4 +1,4 @@
-# Deploying Hybrid Applications with Docker EE
+# Deploying Hybrid Applications with Docker Swarm
 
 
 
@@ -72,6 +72,7 @@ Note: If you have just completed a previous part of the workshop, please close t
 
     ```
     $ docker node ls
+    
     ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS
     uqqgsvc1ykkgoamaatcun89wt *   node1               Ready               Active              Leader
     g4demzyr7sd2ngpa8wntbo0l4     node2               Ready               Active
@@ -144,6 +145,7 @@ This lab will deploy a two service application.  The application features a Java
 
     ```
     $ docker network create -d overlay atsea
+    
     foqztzic1x95kiuq9cuqwuldi
     ```
 
@@ -157,6 +159,7 @@ This lab will deploy a two service application.  The application features a Java
       --publish mode=host,target=1433 \
       --detach=true \
     sixeyed/atsea-db:mssql
+    
     ywlkfxw2oim67fuf9tue7ndyi
     ```
     The service is created with the following parameters:
@@ -172,6 +175,7 @@ This lab will deploy a two service application.  The application features a Java
 
     ```
     $ docker service ps database
+    
     ID                  NAME                IMAGE                          NODE                DESIRED STATE       CURRENT STATE      ERROR               PORTS
     rgwtocu21j0f        database.1          sixeyed/atsea-db:mssql   win00003R           Running             Running 3 minutesago
     ```
@@ -187,6 +191,7 @@ This lab will deploy a two service application.  The application features a Java
     --name appserver \
     --detach=true \
     mikegcoleman/atsea_appserver:1.0
+    
     tqvr2cxk31tr0ryel5ey4zmwr
     ```
 
@@ -194,6 +199,7 @@ This lab will deploy a two service application.  The application features a Java
 
     ```
     $ docker service ls
+    
     ID                  NAME                MODE                REPLICAS            IMAGE                               PORTS
     tqvr2cxk31tr        appserver           replicated          1/1                 dockersamples/atsea-appserver:1.0   *:8080->8080/
     tcp
@@ -204,6 +210,7 @@ This lab will deploy a two service application.  The application features a Java
 
     ```
     $ docker service ps $(docker service ls -q)
+    
     ID                  NAME                IMAGE                               NODE                DESIRED STATE       CURRENT STATE
                 ERROR               PORTS
     jhetafd6jd7u        database.1          sixeyed/atsea-db:mssql              win00003R           Running             Running 3 min
@@ -246,6 +253,7 @@ A common scenario is the need to upgrade an application or application component
 
     ```
     $ docker service ps appserver
+    
     ID                  NAME                IMAGE                               NODE                DESIRED STATE       CURRENT STATE
                         ERROR                              PORTS
     pjt4g23r0oo1        appserver.1         dockersamples/atsea-appserver:2.0   node1               Running             Starting less
@@ -261,6 +269,7 @@ A common scenario is the need to upgrade an application or application component
 
     ```
     $ docker service inspect -f '{{json .UpdateStatus}}' appserver | jq
+    
     {
       "State": "paused",
       "StartedAt": "2017-10-14T00:38:30.188743311Z",
@@ -286,6 +295,7 @@ A common scenario is the need to upgrade an application or application component
 
     ```
     $ docker service ps appserver
+    
     ID                  NAME                IMAGE                               NODE                DESIRED STATE       CURRENT STATE                 ERROR      PORTS
     yoswxm44q9vg        appserver.1         mikegcoleman/atsea_appserver:1.0    node2               Running             Running 11 seconds ago
     lacfi5xiu6e7         \_ appserver.1     dockersamples/atsea-appserver:2.0   node1               Shutdown            Shutdown 25 seconds ago
@@ -308,6 +318,7 @@ A common scenario is the need to upgrade an application or application component
     --update-failure-action pause \
     --detach=true \
     appserver
+    
     appserver
     ```
 
@@ -315,6 +326,7 @@ A common scenario is the need to upgrade an application or application component
 
     ```
     $ docker service ps appserver
+    
     ID                  NAME                IMAGE                               NODEDESIRED STATE       CURRENT STATE             ERROR                              PORTS
     ytygwmyhumrt        appserver.1         dockersamples/atsea-appserver:3.0   node1Running             Running 29 seconds ago
     zjkmbjw7u8e0         \_ appserver.1     mikegcoleman/atsea_appserver:1.0    node1Shutdown            Shutdown 47 seconds ago
@@ -335,6 +347,7 @@ The new update has really increased traffic to the site. As a result we need to 
     --replicas=6 \
     --detach=true \
     appserver
+    
     appserver
     ```
 
@@ -342,6 +355,7 @@ The new update has really increased traffic to the site. As a result we need to 
 
     ```
     $ docker service ps appserver
+    
     ID                  NAME                IMAGE                               NODE                DESIRED STATE       CURRENT STATE             ERROR
       PORTS
     vfbzj3axoays        appserver.1         dockersamples/atsea-appserver:3.0   node1               Running             Running 2 minutes ago
@@ -378,6 +392,7 @@ In it's current state, Swarm expects there to be six instances of the appserver.
 
     ```
     $ docker service ps appserver
+    
     ID                  NAME                IMAGE                               NODE                DESIRED STATE       CURRENT STATE             ERROR  PORTS
     vfbzj3axoays        appserver.1         dockersamples/atsea-appserver:3.0   node1               Running             Running 8 minutes ago
     yoswxm44q9vg         \_ appserver.1     mikegcoleman/atsea_appserver:1.0    node2               Shutdown            Shutdown 8 minutes ago
@@ -400,6 +415,7 @@ In it's current state, Swarm expects there to be six instances of the appserver.
 
     ```
     $ docker service ls
+    
     ID                  NAME                MODE                REPLICAS            IMAGE                               PORTS
     qbeqlc6v0g0z        appserver           replicated          6/6                 dockersamples/atsea-appserver:3.0   *:8080->8080/tcps3luy288gn9l        
     database            replicated          1/1                 sixeyed/atsea-db:mssql
