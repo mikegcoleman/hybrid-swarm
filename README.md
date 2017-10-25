@@ -27,7 +27,7 @@ Note: If you have just completed a previous part of the workshop, please close t
 
 3. Click the `Windows containers` slider and then click `+ Add New Instance`
 
-  There are now three standalone Docker hosts: 2 linux and 1 Windows. 
+    There are now three standalone Docker hosts: 2 linux and 1 Windows. 
 
 4. In the console for `node1` initialize Docker Swarm
 
