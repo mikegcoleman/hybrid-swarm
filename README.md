@@ -157,13 +157,15 @@ This workshop cannot possibly cover all these topics, but we will cover several 
     ```bash
     $ docker service ls
 
-    ID                  NAME                MODE                REPLICAS            IMAGE                      PORTSpypc8c8jh1zm        hostname            replicated          1/1                 dockersamples/linux-hostname:latest   *:8080->8080/tcp
+    ID                  NAME                MODE                REPLICAS            IMAGE                      PORTS
+    pypc8c8jh1zm        hostname            replicated          1/1                 dockersamples/linux-hostname:latest   *:8080->8080/tcp
     ```
 
 1. The `docker service ls` command shows us that the service has been created and that 1 of the expected 1 (`1/1`) tasks have been started, but it doesn't give us any detail on that task. `docker ps` shows the tasks running as part of a given service.
 
     ```bash
     $ docker service ps hostname
+    
     ID                  NAME                IMAGE                                 NODE  DESIRED STATE       CURRENT STATE            ERROR               PORTS
     x47pe8ov8wro        hostname.1          dockersamples/linux-hostname:latest   node1  Running             Running 43 seconds ago
     ````
@@ -370,6 +372,16 @@ Up until this point we have only deployed a single service application, and that
 >   ```
 >
 > So long as the database service is started with the name `database` and is on the same Swarm network, the two services can talk. This is service discovery at work in Docker swam
+
+## Using Docker Compose
+
+In the previous steps we created our network and services manually. In reality we want everything to be as automated and reproducible as possible. Manual steps, of course, increase the possiblity of errors. 
+
+To allow complex applications stacks to be rolled out easily Docker features compose files. Compose files are simply yaml files that provide a blueprint for an aplication including its services, networks, secrets, and just about any other Docker primative it may need. 
+
+In this section we'll redeploy our application using a Docker compose file.
+
+1. Remove the ex
 
 
 ## Upgrades and Rollback
