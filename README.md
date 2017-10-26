@@ -2,36 +2,33 @@
 
 
 
-#### What is "Orchestration"
+## What is "Orchestration"
 
-If you heard about containers you've probably heard about orchstration as well. Conatiner orchestrators, such as Docker Swarm and Kubernetes, provide a ton of functionality around managing and deploying containerized applications. But the two most fundamental things they do are clustering and scheduling (that's not all they do by a long shot, but they are arguably the two most important fuctions).
+If you heard about containers you've probably heard about orchstration as well. Container orchestrators, such as Docker Swarm and Kubernetes, provide a ton of functionality around managing and deploying containerized applications. But the two most fundamental things they do are clustering and scheduling (that's not all they do by a long shot, but they are arguably the two most important fuctions).
 
-Clustering is the concept of taking a group of machines and treating them as a single computing resource. These machines are capable of accepting any workload becaues they all offer the same capabilities. These clustered machines don't have to be running on the same infrastructure - they could be a  mix of bare metal and VMs for instance.  
+Clustering is the concept of taking a group of machines and treating them as a single computing resource. These machines are capable of accepting any workload becaues they all offer the same capabilities. These clustered machines don't have to be running on the same infrastructure - they could be a  mix of bare metal and VMs for instance.
 
-Scheduling is the process of deciding where a workload should reside. When an admin starts a new instance of website she can decide what region it needs to go on or if it should be on bare metal or in the cloud. The scheduler will make that happen. Schedulers also make sure that the application maintains its desired state. For example, if there were 10 copies of a web site running, and one of them crashed, the scheduler would know this and start up a new instance to take the failed one's place. 
+Scheduling is the process of deciding where a workload should execute. When an admin starts a new instance of website she can decide what region it needs to go on or if it should be on bare metal or in the cloud. The scheduler will make that happen. Schedulers also make sure that the application maintains its desired state. For example, if there were 10 copies of a web site running, and one of them crashed, the scheduler would know this and start up a new instance to take the failed one's place.
 
+Docker features a built-in orchestrator: Docker Swarm. It provides both clustering and scheduling as well as many other advanced services.
 
-With Docker ther is a built-in orchestrator: Docker Swarm. It provides both clustering and scheduling as well as many other advanced services. 
+This lab will start with the deployment of a 3 node Docker Swarm cluster.
 
-The next part of the lab will start with the deployment of a 3 node Docker swarm cluster. 
-
-### Build your cluster
-
-Note: If you have just completed a previous part of the workshop, please close that session and start a new one.
+## Build your cluster
 
 1. In your broswer navigate to [Play with Docker](https://dockercon.play-with-docker.com)
 
 1. In the PWD interface click `+ Add new instance` to instantiate a linux node
 
-2. Repeat step 1 to add a second node to the cluster.
+1. Repeat step 1 to add a second node to the cluster.
 
-3. Click the `Windows containers` slider and then click `+ Add New Instance`
+1. Click the `Windows containers` slider and then click `+ Add New Instance`
 
     There are now three standalone Docker hosts: 2 linux and 1 Windows. 
 
-4. In the console for `node1` initialize Docker Swarm
+1. In the console for `node1` initialize Docker Swarm
 
-    ```
+    ```bash
     $ docker swarm init --advertise-addr eth0
 
     Swarm initialized: current node (ujsz5fd1ozr410x1ywuix7sik) is now a manager.
@@ -45,19 +42,18 @@ Note: If you have just completed a previous part of the workshop, please close t
 
     `node1` is now a Swarm manager node. Manager nodes are responsible for ensuring the integrity of the cluster as well as managing running services. 
 
-5. Copy the `docker swarm join` output from `node1`
+1. Copy the `docker swarm join` output from `node1`
 
-6. Switch to `node2` and paste in the command. **Be sure to copy the output from your PWD window, not from this lab guide**
+1. Switch to `node2` and paste in the command. **Be sure to copy the output from your PWD window, not from this lab guide**
 
-    ```
+    ```bash
     $ docker swarm join --token SWMTKN-1-53ao1ihu684vpcpjuf332bi4et27qiwxajefyqryyj4o0indm7-b2zc5ldudkxcmf6kcncft8t12 192.168.0.13:2377
 
     This node joined a swarm as a worker.
     ```
+1. Switch to the Windows node and paste the same command at the Powershell prompt
 
-7. Switch to the Windows node and paste the same command at the Powershell prompt
-
-    ```
+    ```bash
     PS C:\> docker swarm join --token SWMTKN-1-53ao1ihu684vpcpjuf332bi4et27qiwxajefyqryyj4o0indm7-b2zc5ldudkxcmf6kcncft8t12 192.168.0
     .13:2377
 
@@ -66,40 +62,40 @@ Note: If you have just completed a previous part of the workshop, please close t
 
     The three nodes have now been clustered into a single Docker swarm. An important thing to note is that clusters can be made up of Linux nodes, Windows nodes, or a combination of both. 
 
-8. Switch back to `node1`
+1. Switch back to `node1`
 
-9. List the nodes in the cluster
+1. List the nodes in the cluster
 
-    ```
+    ```bash
     $ docker node ls
-    
+
     ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS
     uqqgsvc1ykkgoamaatcun89wt *   node1               Ready               Active              Leader
     g4demzyr7sd2ngpa8wntbo0l4     node2               Ready               Active
     xflngp99u1r9pn7bryqbbrrvq     win000046           Ready               Active
     ```
 
-10. Commands against the swarm can only be issued from the manager node. Attempting to run the above command from the `Windows` 
+1. Commands against the swarm can only be issued from the manager node. Attempting to run the above command from the `Windows` 
 
-    ```
+    ```bash
     PS C:\ docker node ls
 
     Error response from daemon: This node is not a swarm manager. Worker nodes can't be used to view or modify cluster state. Please run this command on a manager node or promote the current node to a manager.
     ```
 
-11. Move back to `node1` and promote the Windows node to a manager role:
+1. Move back to `node1` and promote the Windows node to a manager role:
 
     > **Note** Be sure to use the name of your Windows node
 
-    ```
+    ```bash
     $ docker node promote winxxxxx
 
     Node winxxxxx promoted to a manager in the swarm.
     ```
 
-12. Move back to the `Windows` node and run the `docker node ls` command again
+1. Move back to the `Windows` node and run the `docker node ls` command again
 
-    ```
+    ```bash
     PS C:\ docker node ls
 
     ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS
@@ -108,18 +104,17 @@ Note: If you have just completed a previous part of the workshop, please close t
     ymj4gg6bnfvgc70j8r9zef593     node2               Ready               Active
     ```
 
-13. Move back to the `node1` node and demote the Windows node back to a worker.
+1. Move back to the `node1` node and demote the Windows node back to a worker.
 
-    ```
+    ```bash
     $ docker node demote winxxxxx
 
     Manager winxxxx demoted in the swarm.
     ```
 
-
 ## Deploying Swarm services
 
-While we have been using `docker run` to instantiate docker containers on our Swarm cluster, the preferred way to actually run applications is via a  [*service*](https://docs.docker.com/engine/swarm/how-swarm-mode-works/services/).
+While we use `docker run` to instantiate docker containers on a single non-clustered node, the preferred way to actually run applications in a Swarm cluster is via a Docker [*service*](https://docs.docker.com/engine/swarm/how-swarm-mode-works/services/).
 
 Services are an abstraction in Docker that represent an application or component of an application. For instance a web front end service connecting to a database backend service. You can deploy an application made up of a single service. In fact, this is quite common when [modernizing traditional applications](https://goto.docker.com/rs/929-FJL-178/images/SB_MTA_04.14.2017.pdf). 
 
@@ -133,19 +128,112 @@ The service construct provides a host of useful features including:
 * Upgrades and rollback
 * Scaling
 
-This workshop cannot possibly cover all these topics, but will address several key points. 
+This workshop cannot possibly cover all these topics, but will address look at load bala.
 
-This lab will deploy a two service application.  The application features a Java-based web front end running on Linux, and a Microsoft SQL server running on Windows. 
+This lab will deploy a two service application.  The application features a Java-based web front end running on Linux, and a Microsoft SQL server running on Windows.
 
-### Deploying a Multi-OS Application with Docker Swarm
+1. Let's start by creating our first service:
+
+    ```bash
+    docker service create \
+    --name hostname \
+    --replicas 1 \
+    --publish 8080:8080 \
+    --detach=true \
+    dockersamples/linux-hostname:latest
+
+    t5aqr8z0prphzidnd44dhojpb
+    ```
+
+    Let's look at each line:
+
+    * `docker service create`: Create a new Swarm service
+    * `--name hostname`: Names the service hostname
+    * `--replicas 1`: Start a single task under the service
+    * `--publish 8080:8080`: Route any requests coming into the swarm cluster on port 8080 to the service at port 8080
+    * `--detach=true`: Run the service in the background
+    * `dockersamples\linux-hostname:latest`: Base our service on the `dockersamples\linux-hostname` image
+
+1. Check to ensure that your service was created. `docker service ls` will list all the services running on a Swarm cluster. 
+
+    ```bash
+    $ docker service ls
+
+    ID                  NAME                MODE                REPLICAS            IMAGE                      PORTSpypc8c8jh1zm        hostname            replicated          1/1                 dockersamples/linux-hostname:latest   *:8080->8080/tcp
+    ```
+
+1. The `docker service ls` command shows us that the service has been created and that 1 of the expected 1 (`1/1`) tasks have been started, but it doesn't give us any detail on that task. `docker ps` shows the tasks running as part of a given service.
+
+    ```bash
+    $ docker service ps hostname
+    ID                  NAME                IMAGE                                 NODE  DESIRED STATE       CURRENT STATE            ERROR               PORTS
+    x47pe8ov8wro        hostname.1          dockersamples/linux-hostname:latest   node1  Running             Running 43 seconds ago
+    ````
+
+    The output of the command displays the image the task is based on, the node where it is executing, the desired state of the task, and the actual state of task.
+
+    In the example above notice the task is running on `node1`
+
+    > Note: Your task may be running on `node2` - be sure to make a note of where it's actually running.
+
+1. This service simply returns the host name of the container that responds to the request. **From the node where the taks is running** issue a `curl` command to see the output.
+
+    > Note: If the output from `docker service ps` showed your task running on `node2` be sure to switch to `node2`
+
+    ```bash
+    $ curl localhost:8080
+
+    Served by host: b738b7709d4b
+    ```
+1. Check to see the running containers on that host:
+
+    ```bash
+    $ docker container ps 
+
+    CONTAINER ID        IMAGE                                 COMMAND             CREATED             STATUS              PORTS
+         NAMES
+    b738b7709d4b        dockersamples/linux-hostname:latest   "/hello-go"         6 minutes ago       Up 6 minutes        8080/tcp
+         hostname.1.x47pe8ov8wrov69zv3zajho27
+    ```
+
+    Notice that the `CONTAINER ID` matches the hostname displayed in the previous step.
+
+    Note: Outside of troubleshooting, you should never need to interact with the containers in a service directly.
+
+1. Execute the curl command from the **other** Linux node in your cluster (the one where the container is not running). 
+
+    ```bash
+    $ curl localhost:8080
+    Served by host: b738b7709d4b
+    ```
+
+    Notice that the service responds regardless of which Linux host you execute the `curl` command from. This is the ingress routing mesh at work. Port 8080 is published across the cluster, and any requests that come in will be routed to a node where a task is running. In our case, we only have one replica, so we only have one container that can respond. 
+
+    > Note: At the time of writing this lab Windows hosts could not participate in the ingress routing mesh. However, with the latest update to Windows (1709), this restriction no longer exists.
+
+1. List the networks in your swarm cluster
+
+    ```bash
+    $ docker network ls
+    NETWORK ID          NAME                DRIVER              SCOPE
+    36cbd99c755e        bridge              bridge              local
+    ca57db11455b        docker_gwbridge     bridge              local
+    a9d94a365900        host                host                local
+    mbvc90x4n2i1        ingress             overlay             swarm1
+    a9562964665a        none                null                local
+    ```
+
+    Notice that the `ingress` overlay network that is scoped to `swarm`. This is the network that handles all incoming requests to the cluster. All nodes in the cluster are automatically joined to the `ingress` network when they are created. 
+
+## Deploying a Multi-OS Application with Docker Swarm
 
 1. Move to `node1`
 
-2. Create an overlay network for the application
+1. Create an overlay network for the application
 
-    ```
+    ```bash
     $ docker network create -d overlay atsea
-    
+
     foqztzic1x95kiuq9cuqwuldi
     ```
 
