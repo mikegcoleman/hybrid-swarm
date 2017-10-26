@@ -364,7 +364,7 @@ Up until this point we have only deployed a single service application, and that
     utes ago
     ```
 
-1. Visit the running website by clicking the `8080` at the top of the PWD screen.
+1. Visit the running website by clicking the `8080` at the top of the PWD screen. The images being displayed on the web site are actually pulled from the SQL Server database. If they are displayed correctly then your app is fuctioning as expected. 
 
 > Note: Our application code knows nothing about our networking code. The only thing it knows is that the database hostname is going to be `database`. So in our application code database connection string looks like this:
 >
@@ -393,13 +393,15 @@ A common scenario is the need to upgrade an application or application component
 
     To upgrade our application we're simply going to roll out an updated Docker image. In this case version `2.0`.
 
-2. Upgrade the Appserver service to version 2.0
+1. Upgrade the Appserver service to version 2.0
 
-    ```
+    ```bash
     $ docker service update \
-    --image mikegcoleman/atsea-appserver:2.0 \
+    --image mikegcoleman/atsea_appserver:2.0 \
     --update-failure-action pause \
     --detach=true \
+    appserver
+
     appserver
     ```
 
@@ -442,6 +444,7 @@ A common scenario is the need to upgrade an application or application component
     --rollback \
     --detach=true \
     appserver
+
     appserver
     ```
 
@@ -468,7 +471,7 @@ A common scenario is the need to upgrade an application or application component
 
     ```
     $ docker service update \
-    --image mikegcoleman/atsea-appserver:3.0 \
+    --image mikegcoleman/atsea_appserver:3.0 \
     --update-failure-action pause \
     --detach=true \
     appserver
@@ -525,9 +528,9 @@ The new update has really increased traffic to the site. As a result we need to 
     jqkokd2uoki6        appserver.6         mikegcoleman/atsea-appserver:3.0   node1               Running             Running 12 seconds ag
     ```
 
-Docker is starting up 5 new instances of the appserver, and is placing them across both the nodes in the cluster. 
+Docker is starting up 5 new instances of the appserver, and is placing them across both the nodes in the cluster.
 
-When all 6 nodes are running, move on to the next step. 
+When all 6 nodes are running, move on to the next step.
 
 ## Failure and recovery
 The next exercise simulates a node failure. When a node fails the containers that were running there are, of course, lost as well. Swarm is constantly monitoring the state of the cluster, and when it detects an anomoly it attemps to bring the cluster back in to compliance. 
