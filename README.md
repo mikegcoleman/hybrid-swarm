@@ -383,32 +383,32 @@ In this section we'll redeploy our application using a Docker compose file.
 
 Below is our Docker compose file. You'll notice the syntax is easy to interpret since it matches command line parameters pretty closely. 
 
-    ```
-    version: "3.2"
+```yaml
+version: "3.2"
 
-    services:
+services:
 
-    database:
-        image: sixeyed/atsea-db:mssql
-        ports:
-        - mode: host
-            target: 1433
-        networks:
-        - atsea
-        deploy:
-        endpoint_mode: dnsrr
-
-    appserver:
-        image: mikegcoleman/atsea_appserver:1.0
-        ports:
-        - target: 8080
-            published: 8080
-        networks:
-        - atsea
-
+database:
+    image: sixeyed/atsea-db:mssql
+    ports:
+    - mode: host
+        target: 1433
     networks:
-        atsea:
-    ```
+    - atsea
+    deploy:
+    endpoint_mode: dnsrr
+
+appserver:
+    image: mikegcoleman/atsea_appserver:1.0
+    ports:
+    - target: 8080
+        published: 8080
+    networks:
+    - atsea
+
+networks:
+    atsea:
+```
 
 Before we can deploy via the compose file, we'll need to remove our existing application. 
 
