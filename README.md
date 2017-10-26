@@ -223,8 +223,50 @@ This lab will deploy a two service application.  The application features a Java
     a9562964665a        none                null                local
     ```
 
-    Notice that the `ingress` overlay network that is scoped to `swarm`. This is the network that handles all incoming requests to the cluster. All nodes in the cluster are automatically joined to the `ingress` network when they are created. 
+    Notice that the `ingress` overlay network that is scoped to `swarm`. This is the network that handles all incoming requests to the cluster. All nodes in the cluster are automatically joined to the `ingress` network when they are created.
 
+1. With Docker Swarm you can easily increase the number of tasks in a service. This can be done to add horizontal scalability or provide fault tolerance (or both).
+
+    Scale the number of tasks running in the service. 
+
+    **Make sure you are back in the console for `node1`**
+
+    ```bash
+    $ docker service scale \
+    --detach=true \
+    hostname=5
+
+    hostname scaled to 5
+    ```
+
+1. List the tasks now running in the service
+
+    ```bash
+    $ docker servie ps hostname
+
+    NAME                IMAGE                                 NODE                DESIRED STATE       CURRENT STATE           ERROR               PORTS
+    nrbwg96sit7x        hostname.1          dockersamples/linux-hostname:latest   node2               Running             Running 2 minutes ago
+    xzcyl9n3u47a        hostname.2          dockersamples/linux-hostname:latest   node2               Running             Running 2 minutes ago
+    6nkyz2rsi44y        hostname.3          dockersamples/linux-hostname:latest   node1               Running             Running 2 minutes ago
+    n65wj1o4luc2        hostname.4          dockersamples/linux-hostname:latest   node2               Running             Running 2 minutes ago
+    4xw1kl3a9t24        hostname.5          dockersamples/linux-hostname:latest   node1               Running             Running 2 minutes ago
+    ```
+
+    Notice the tasks have been spread  between `node` and `node2`
+
+1. Another feature of swarm is load balancing. Incoming requests will balanced between the nodes in the cluster using IPVS. Issue multple curl commands to the service to see this in action:
+
+    ```bash
+    $ for ((i=1; i<=5; i+=1)); do curl localhost:8080; done;
+    Served by host: 5e4c0354adf2
+    Served by host: 90207eb2beaf
+    Served by host: aacbc0791536
+    Served by host: a85e7065bbda
+    Served by host: fd1e67aaf7dd
+    ```
+
+    Notice that each request is serviced by a different container running in the cluster. Feel free to list the running containers on each of the two Linux nodes to verify that the host name displayed above match the containers IDs of the running tasks. 
+    
 ## Deploying a Multi-OS Application with Docker Swarm
 
 1. Move to `node1`
