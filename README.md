@@ -202,6 +202,7 @@ This workshop cannot possibly cover all these topics, but we will cover several 
 
     ```bash
     $ curl localhost:8080
+
     Served by host: b738b7709d4b
     ```
 
@@ -213,6 +214,7 @@ This workshop cannot possibly cover all these topics, but we will cover several 
 
     ```bash
     $ docker network ls
+
     NETWORK ID          NAME                DRIVER              SCOPE
     36cbd99c755e        bridge              bridge              local
     ca57db11455b        docker_gwbridge     bridge              local
@@ -240,7 +242,7 @@ This workshop cannot possibly cover all these topics, but we will cover several 
 1. List the tasks now running in the service
 
     ```bash
-    $ docker servie ps hostname
+    $ docker service ps hostname
 
     NAME                IMAGE                                 NODE                DESIRED STATE       CURRENT STATE           ERROR               PORTS
     nrbwg96sit7x        hostname.1          dockersamples/linux-hostname:latest   node2               Running             Running 2 minutes ago
@@ -256,6 +258,7 @@ This workshop cannot possibly cover all these topics, but we will cover several 
 
     ```bash
     $ for ((i=1; i<=5; i+=1)); do curl localhost:8080; done;
+
     Served by host: 5e4c0354adf2
     Served by host: 90207eb2beaf
     Served by host: aacbc0791536
@@ -332,7 +335,7 @@ Up until this point we have only deployed a single service application, and that
     --network atsea \
     --name appserver \
     --detach=true \
-    dockersamples/atsea_appserver:1.0
+    mikegcoleman/atsea_appserver:1.0
 
     tqvr2cxk31tr0ryel5ey4zmwr
     ```
@@ -343,7 +346,7 @@ Up until this point we have only deployed a single service application, and that
     $ docker service ls
 
     ID                  NAME                MODE                REPLICAS            IMAGE                               PORTS
-    tqvr2cxk31tr        appserver           replicated          1/1                 dockersamples/atsea-appserver:1.0   *:8080->8080/
+    tqvr2cxk31tr        appserver           replicated          1/1                 mikegcoleman/atsea-appserver:1.0   *:8080->8080/
     tcp
     xkm68h7z3wsu        database            replicated          1/1                 sixeyed/atsea-db:mssql
     ```
@@ -357,7 +360,7 @@ Up until this point we have only deployed a single service application, and that
                 ERROR               PORTS
     jhetafd6jd7u        database.1          sixeyed/atsea-db:mssql              win00003R           Running             Running 3 min
     utes ago                        *:64024->1433/tcp
-    2cah7mw5a5c7        appserver.1         dockersamples/atsea-appserver:1.0   node1               Running             Running 6 min
+    2cah7mw5a5c7        appserver.1         mikegcoleman/atsea-appserver:1.0   node1               Running             Running 6 min
     utes ago
     ```
 
@@ -394,7 +397,7 @@ A common scenario is the need to upgrade an application or application component
 
     ```
     $ docker service update \
-    --image dockersamples/atsea-appserver:2.0 \
+    --image mikegcoleman/atsea-appserver:2.0 \
     --update-failure-action pause \
     --detach=true \
     appserver
@@ -407,11 +410,11 @@ A common scenario is the need to upgrade an application or application component
     
     ID                  NAME                IMAGE                               NODE                DESIRED STATE       CURRENT STATE
                         ERROR                              PORTS
-    pjt4g23r0oo1        appserver.1         dockersamples/atsea-appserver:2.0   node1               Running             Starting less
+    pjt4g23r0oo1        appserver.1         mikegcoleman/atsea-appserver:2.0   node1               Running             Starting less
     than a second ago
-    usx1sk2gtoib         \_ appserver.1     dockersamples/atsea-appserver:2.0   node2               Shutdown            Failed 5 seco
+    usx1sk2gtoib         \_ appserver.1     mikegcoleman/atsea-appserver:2.0   node2               Shutdown            Failed 5 seco
     nds ago              "task: non-zero exit (143): do…"
-    suee368vg3r1         \_ appserver.1     dockersamples/atsea-appserver:1.0   node1               Shutdown            Shutdown 24 seconds ago
+    suee368vg3r1         \_ appserver.1     mikegcoleman/atsea-appserver:1.0   node1               Shutdown            Shutdown 24 seconds ago
     ```
 
     Clearly there is some issue, as the containers are failing to start. 
@@ -449,9 +452,9 @@ A common scenario is the need to upgrade an application or application component
     
     ID                  NAME                IMAGE                               NODE                DESIRED STATE       CURRENT STATE                 ERROR      PORTS
     yoswxm44q9vg        appserver.1         mikegcoleman/atsea_appserver:1.0    node2               Running             Running 11 seconds ago
-    lacfi5xiu6e7         \_ appserver.1     dockersamples/atsea-appserver:2.0   node1               Shutdown            Shutdown 25 seconds ago
-    tvcr9dwvm578         \_ appserver.1     dockersamples/atsea-appserver:2.0   node1               Shutdown            Failed 49 seconds ago         "task: non-zero exit (143): do…"
-    xg4274jpochx         \_ appserver.1     dockersamples/atsea-appserver:2.0   node1               Shutdown            Failed about a minute ago     "task: non-zero exit (143): do…"
+    lacfi5xiu6e7         \_ appserver.1     mikegcoleman/atsea-appserver:2.0   node1               Shutdown            Shutdown 25 seconds ago
+    tvcr9dwvm578         \_ appserver.1     mikegcoleman/atsea-appserver:2.0   node1               Shutdown            Failed 49 seconds ago         "task: non-zero exit (143): do…"
+    xg4274jpochx         \_ appserver.1     mikegcoleman/atsea-appserver:2.0   node1               Shutdown            Failed about a minute ago     "task: non-zero exit (143): do…"
     z7toh7jwk8qf         \_ appserver.1     mikegcoleman/atsea_appserver:1.0    node1               Shutdown            Shutdown about a minute ago
     ```
 
@@ -465,7 +468,7 @@ A common scenario is the need to upgrade an application or application component
 
     ```
     $ docker service update \
-    --image dockersamples/atsea-appserver:3.0 \
+    --image mikegcoleman/atsea-appserver:3.0 \
     --update-failure-action pause \
     --detach=true \
     appserver
@@ -479,10 +482,10 @@ A common scenario is the need to upgrade an application or application component
     $ docker service ps appserver
     
     ID                  NAME                IMAGE                               NODEDESIRED STATE       CURRENT STATE             ERROR                              PORTS
-    ytygwmyhumrt        appserver.1         dockersamples/atsea-appserver:3.0   node1Running             Running 29 seconds ago
+    ytygwmyhumrt        appserver.1         mikegcoleman/atsea-appserver:3.0   node1Running             Running 29 seconds ago
     zjkmbjw7u8e0         \_ appserver.1     mikegcoleman/atsea_appserver:1.0    node1Shutdown            Shutdown 47 seconds ago
-    wemedok12frl         \_ appserver.1     dockersamples/atsea-appserver:2.0   node1Shutdown            Failed 2 minutes ago      "task: non-zero exit (143): do…"
-    u6wd7wje82zn         \_ appserver.1     dockersamples/atsea-appserver:2.0   node1Shutdown            Failed 2 minutes ago      "task: non-zero exit (143): do…"
+    wemedok12frl         \_ appserver.1     mikegcoleman/atsea-appserver:2.0   node1Shutdown            Failed 2 minutes ago      "task: non-zero exit (143): do…"
+    u6wd7wje82zn         \_ appserver.1     mikegcoleman/atsea-appserver:2.0   node1Shutdown            Failed 2 minutes ago      "task: non-zero exit (143): do…"
     ```
 
 10. Once the status reports back "Running xx seconds", reload website the website once again to verify that the new version has been deployed
@@ -509,17 +512,17 @@ The new update has really increased traffic to the site. As a result we need to 
     
     ID                  NAME                IMAGE                               NODE                DESIRED STATE       CURRENT STATE             ERROR
       PORTS
-    vfbzj3axoays        appserver.1         dockersamples/atsea-appserver:3.0   node1               Running             Running 2 minutes ago
+    vfbzj3axoays        appserver.1         mikegcoleman/atsea-appserver:3.0   node1               Running             Running 2 minutes ago
 
     yoswxm44q9vg         \_ appserver.1     mikegcoleman/atsea_appserver:1.0    node2               Shutdown            Shutdown 2 minutes ago
-    tvcr9dwvm578         \_ appserver.1     dockersamples/atsea-appserver:2.0   node1               Shutdown            Failed 5 minutes ago      "task: non-zero exit (143): do…"
-    xg4274jpochx         \_ appserver.1     dockersamples/atsea-appserver:2.0   node1               Shutdown            Failed 6 minutes ago      "task: non-zero exit (143): do…"
+    tvcr9dwvm578         \_ appserver.1     mikegcoleman/atsea-appserver:2.0   node1               Shutdown            Failed 5 minutes ago      "task: non-zero exit (143): do…"
+    xg4274jpochx         \_ appserver.1     mikegcoleman/atsea-appserver:2.0   node1               Shutdown            Failed 6 minutes ago      "task: non-zero exit (143): do…"
     z7toh7jwk8qf         \_ appserver.1     mikegcoleman/atsea_appserver:1.0    node1               Shutdown            Shutdown 7 minutes ago
-    i474a8emgwbc        appserver.2         dockersamples/atsea-appserver:3.0   node2               Running             Starting 30 seconds ago
-    gu7rphvp2q3l        appserver.3         dockersamples/atsea-appserver:3.0   node2               Running             Starting 30 seconds ago
-    gzjdye1kne33        appserver.4         dockersamples/atsea-appserver:3.0   node1               Running             Running 7 seconds ago
-    u596cqkgf2aa        appserver.5         dockersamples/atsea-appserver:3.0   node2               Running             Starting 30 seconds ago
-    jqkokd2uoki6        appserver.6         dockersamples/atsea-appserver:3.0   node1               Running             Running 12 seconds ag
+    i474a8emgwbc        appserver.2         mikegcoleman/atsea-appserver:3.0   node2               Running             Starting 30 seconds ago
+    gu7rphvp2q3l        appserver.3         mikegcoleman/atsea-appserver:3.0   node2               Running             Starting 30 seconds ago
+    gzjdye1kne33        appserver.4         mikegcoleman/atsea-appserver:3.0   node1               Running             Running 7 seconds ago
+    u596cqkgf2aa        appserver.5         mikegcoleman/atsea-appserver:3.0   node2               Running             Starting 30 seconds ago
+    jqkokd2uoki6        appserver.6         mikegcoleman/atsea-appserver:3.0   node1               Running             Running 12 seconds ag
     ```
 
 Docker is starting up 5 new instances of the appserver, and is placing them across both the nodes in the cluster. 
@@ -545,19 +548,19 @@ In it's current state, Swarm expects there to be six instances of the appserver.
     $ docker service ps appserver
     
     ID                  NAME                IMAGE                               NODE                DESIRED STATE       CURRENT STATE             ERROR  PORTS
-    vfbzj3axoays        appserver.1         dockersamples/atsea-appserver:3.0   node1               Running             Running 8 minutes ago
+    vfbzj3axoays        appserver.1         mikegcoleman/atsea-appserver:3.0   node1               Running             Running 8 minutes ago
     yoswxm44q9vg         \_ appserver.1     mikegcoleman/atsea_appserver:1.0    node2               Shutdown            Shutdown 8 minutes ago
-    tvcr9dwvm578         \_ appserver.1     dockersamples/atsea-appserver:2.0   node1               Shutdown            Failed 11 minutes ago     "task: non-zero exit (143): do…"
-    xg4274jpochx         \_ appserver.1     dockersamples/atsea-appserver:2.0   node1               Shutdown            Failed 12 minutes ago     "task: non-zero exit (143): do…"
+    tvcr9dwvm578         \_ appserver.1     mikegcoleman/atsea-appserver:2.0   node1               Shutdown            Failed 11 minutes ago     "task: non-zero exit (143): do…"
+    xg4274jpochx         \_ appserver.1     mikegcoleman/atsea-appserver:2.0   node1               Shutdown            Failed 12 minutes ago     "task: non-zero exit (143): do…"
     z7toh7jwk8qf         \_ appserver.1     mikegcoleman/atsea_appserver:1.0    node1               Shutdown            Shutdown 12 minutes ago
-    zmp7mfpme2go        appserver.2         dockersamples/atsea-appserver:3.0   node1               Running             Starting 5 seconds ago
-    i474a8emgwbc         \_ appserver.2     dockersamples/atsea-appserver:3.0   node2               Shutdown            Shutdown 5 seconds ago
-    l7gxju3x6zx8        appserver.3         dockersamples/atsea-appserver:3.0   node1               Running             Starting 5 seconds ago
-    gu7rphvp2q3l         \_ appserver.3     dockersamples/atsea-appserver:3.0   node2               Shutdown            Shutdown 5 seconds ago
-    gzjdye1kne33        appserver.4         dockersamples/atsea-appserver:3.0   node1               Running             Running 5 minutes ago
-    ure9u7li7myv        appserver.5         dockersamples/atsea-appserver:3.0   node1               Running             Starting 5 seconds ago
-    u596cqkgf2aa         \_ appserver.5     dockersamples/atsea-appserver:3.0   node2               Shutdown            Shutdown 5 seconds ago
-    jqkokd2uoki6        appserver.6         dockersamples/atsea-appserver:3.0   node1               Running             Running 6 minutes ago
+    zmp7mfpme2go        appserver.2         mikegcoleman/atsea-appserver:3.0   node1               Running             Starting 5 seconds ago
+    i474a8emgwbc         \_ appserver.2     mikegcoleman/atsea-appserver:3.0   node2               Shutdown            Shutdown 5 seconds ago
+    l7gxju3x6zx8        appserver.3         mikegcoleman/atsea-appserver:3.0   node1               Running             Starting 5 seconds ago
+    gu7rphvp2q3l         \_ appserver.3     mikegcoleman/atsea-appserver:3.0   node2               Shutdown            Shutdown 5 seconds ago
+    gzjdye1kne33        appserver.4         mikegcoleman/atsea-appserver:3.0   node1               Running             Running 5 minutes ago
+    ure9u7li7myv        appserver.5         mikegcoleman/atsea-appserver:3.0   node1               Running             Starting 5 seconds ago
+    u596cqkgf2aa         \_ appserver.5     mikegcoleman/atsea-appserver:3.0   node2               Shutdown            Shutdown 5 seconds ago
+    jqkokd2uoki6        appserver.6         mikegcoleman/atsea-appserver:3.0   node1               Running             Running 6 minutes ago
     ```
 
     The output above shows the containers that werer running on `node2` have been shut down and are being restarted on `node`
@@ -568,7 +571,7 @@ In it's current state, Swarm expects there to be six instances of the appserver.
     $ docker service ls
     
     ID                  NAME                MODE                REPLICAS            IMAGE                               PORTS
-    qbeqlc6v0g0z        appserver           replicated          6/6                 dockersamples/atsea-appserver:3.0   *:8080->8080/tcps3luy288gn9l        
+    qbeqlc6v0g0z        appserver           replicated          6/6                 mikegcoleman/atsea-appserver:3.0   *:8080->8080/tcps3luy288gn9l        
     database            replicated          1/1                 sixeyed/atsea-db:mssql
     ```
 
