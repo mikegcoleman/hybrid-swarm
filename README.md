@@ -529,7 +529,7 @@ A common scenario is the need to upgrade an application or application component
 
     Clearly there is some issue, as the containers are failing to start. 
 
-1. Check on the satus of the update
+1. Check on the status of the update
 
     ```bash
     $ docker service inspect -f '{{json .UpdateStatus}}' atsea_appserver | jq
