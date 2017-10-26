@@ -325,6 +325,8 @@ Up until this point we have only deployed a single service application, and that
     ```
 
     > Note: Keep checking the status of the service until the `CURRENT STATE` is running. This usually takes 2-3 minutes
+    
+    > Note: Also, check your service using 'docker service ls', that it displays '1/1' replicas.  If '0/1' replicas is shown the service is not fully available yet, even when 'docker service ps database' shows the service as running.  You should wait until 'docker service ls', shows '1/1' replicas
 
 1. Start the web front-end service
 
