@@ -506,15 +506,17 @@ A common scenario is the need to upgrade an application or application component
     --image mikegcoleman/atsea_appserver:2.0 \
     --update-failure-action pause \
     --detach=true \
-    appserver
+    atsea_appserver
 
-    appserver
+    atsea_appserver
     ```
+
+    > Notice that our service name is prepended with the name of our stack `atsea_appserver`
 
 3. Check on the status of the upgrade
 
     ```
-    $ docker service ps appserver
+    $ docker service ps atsea_appserver
     
     ID                  NAME                IMAGE                               NODE                DESIRED STATE       CURRENT STATE
                         ERROR                              PORTS
@@ -530,7 +532,7 @@ A common scenario is the need to upgrade an application or application component
 4. Check on the satus of the update
 
     ```
-    $ docker service inspect -f '{{json .UpdateStatus}}' appserver | jq
+    $ docker service inspect -f '{{json .UpdateStatus}}' atsea_appserver | jq
     
     {
       "State": "paused",
@@ -549,15 +551,15 @@ A common scenario is the need to upgrade an application or application component
     $ docker service update \
     --rollback \
     --detach=true \
-    appserver
+    atsea_appserver
 
-    appserver
+    atsea_appserver
     ```
 
  6. Check on the status of the service
 
     ```
-    $ docker service ps appserver
+    $ docker service ps atsea_appserver
     
     ID                  NAME                IMAGE                               NODE                DESIRED STATE       CURRENT STATE                 ERROR      PORTS
     yoswxm44q9vg        appserver.1         mikegcoleman/atsea_appserver:1.0    node2               Running             Running 11 seconds ago
@@ -580,15 +582,15 @@ A common scenario is the need to upgrade an application or application component
     --image mikegcoleman/atsea_appserver:3.0 \
     --update-failure-action pause \
     --detach=true \
-    appserver
-    
-    appserver
+    atsea_appserver
+
+    atsea_appserver
     ```
 
 9. Check the status of the upgrade
 
     ```
-    $ docker service ps appserver
+    $ docker service ps atsea_appserver
     
     ID                  NAME                IMAGE                               NODEDESIRED STATE       CURRENT STATE             ERROR                              PORTS
     ytygwmyhumrt        appserver.1         mikegcoleman/atsea-appserver:3.0   node1Running             Running 29 seconds ago
@@ -609,15 +611,15 @@ The new update has really increased traffic to the site. As a result we need to 
     $  docker service update \
     --replicas=6 \
     --detach=true \
-    appserver
+    atsea_appserver
     
-    appserver
+    atsea_appserver
     ```
 
 2. Check the status of the update
 
     ```
-    $ docker service ps appserver
+    $ docker service ps atsea_appserver
     
     ID                  NAME                IMAGE                               NODE                DESIRED STATE       CURRENT STATE             ERROR
       PORTS
@@ -654,7 +656,7 @@ In it's current state, Swarm expects there to be six instances of the appserver.
 2. Check the status of the service
 
     ```
-    $ docker service ps appserver
+    $ docker service ps atsea_appserver
     
     ID                  NAME                IMAGE                               NODE                DESIRED STATE       CURRENT STATE             ERROR  PORTS
     vfbzj3axoays        appserver.1         mikegcoleman/atsea-appserver:3.0   node1               Running             Running 8 minutes ago
