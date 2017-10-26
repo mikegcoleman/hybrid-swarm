@@ -422,7 +422,6 @@ Before we can deploy via the compose file, we'll need to remove our existing app
     $ docker service rm database
 
     database
-    
     ```
 
 1. Remove the existing network
