@@ -190,7 +190,7 @@ This workshop cannot possibly cover all these topics, but we will cover several 
     ```bash
     $ docker container ps 
 
-    CONTAINER ID        IMAGE                                 COMMAND             CREATED             STATUS              PORTS     NAMES
+    CONTAINER ID        IMAGE                                 COMMAND             CREATED             STATUS              PORTS         NAMES
     b738b7709d4b        dockersamples/linux-hostname:latest   "/hello-go"         6 minutes ago       Up 6 minutes        8080/tcp      hostname.1.x47pe8ov8wrov69zv3zajho27
     ```
 
