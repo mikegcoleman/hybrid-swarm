@@ -463,8 +463,8 @@ Before we can deploy via the compose file, we'll need to remove our existing app
     Creating service atsea_appserver
     ```
 
-    `-c` specified which file should be used to deploy the stack
-    `atsea` is the name of our stack
+    * `-c` specified which file should be used to deploy the stack
+    * `atsea` is the name of our stack
 
     > Notice that even though our network was listed last in our compose file, it was created first. Swarm knows that the two services need to connect to the network, so it's created first to allow this to happen
 
