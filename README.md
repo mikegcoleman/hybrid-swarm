@@ -383,7 +383,7 @@ In this section we'll redeploy our application using a Docker compose file.
 
 Below is our Docker compose file. You'll notice the syntax is easy to interpret since it matches command line parameters pretty closely. 
 
-    ```yaml
+    ```
     version: "3.2"
 
     services:
