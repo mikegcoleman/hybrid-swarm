@@ -437,58 +437,58 @@ Before we can deploy via the compose file, we'll need to remove our existing app
 
 1. Clone the workshop repo onto `node1`
 
-```bash
-$ git clone https://github.com/mikegcoleman/hybrid-swarm.git
+    ```bash
+    $ git clone https://github.com/mikegcoleman/hybrid-swarm.git
 
-Cloning into 'hybrid-swarm'...
-remote: Counting objects: 54, done.
-remote: Compressing objects: 100% (25/25), done.
-remote: Total 54 (delta 16), reused 54 (delta 16), pack-reused 0
-Unpacking objects: 100% (54/54), done.
-```
+    Cloning into 'hybrid-swarm'...
+    remote: Counting objects: 54, done.
+    remote: Compressing objects: 100% (25/25), done.
+    remote: Total 54 (delta 16), reused 54 (delta 16), pack-reused 0
+    Unpacking objects: 100% (54/54), done.
+    ```
 
 1. Change into the `hybrid-swarm` directory
 
-```
-$ cd hybrid-swarm
-```
+    ```
+    $ cd hybrid-swarm
+    ```
 
 1. Deploy the application stack using the compose file
 
-```bash
-$ docker stack deploy -c docker-compose.yaml atsea
+    ```bash
+    $ docker stack deploy -c docker-compose.yaml atsea
 
-Creating network atsea_atsea
-Creating service atsea_database
-Creating service atsea_appserver
-```
+    Creating network atsea_atsea
+    Creating service atsea_database
+    Creating service atsea_appserver
+    ```
 
-* `-c` specified which file should be used to deploy the stack
-* `atsea` is the name of our stack
+    * `-c` specified which file should be used to deploy the stack
+    * `atsea` is the name of our stack
 
-> Notice that even though our network was listed last in our compose file, it was created first. Swarm knows that the two services need to connect to the network, so it's created first to allow this to happen
+    > Notice that even though our network was listed last in our compose file, it was created first. Swarm knows that the two services need to connect to the network, so it's created first to allow this to happen
 
 1. List the services
 
-```bash
-$ docker service ls
+    ```bash
+    $ docker service ls
 
-ID                  NAME                MODE                REPLICAS            IMAGE                              PORTS
-miy9k6siatm1        atsea_appserver     replicated          1/1                 mikegcoleman/atsea_appserver:1.0   *:8080->8080/tcp
-8tqlpvq8ewf0        atsea_database      replicated          1/1                 sixeyed/atsea-db:mssql
-```
+    ID                  NAME                MODE                REPLICAS            IMAGE                              PORTS
+    miy9k6siatm1        atsea_appserver     replicated          1/1                 mikegcoleman/atsea_appserver:1.0   *:8080->8080/tcp
+    8tqlpvq8ewf0        atsea_database      replicated          1/1                 sixeyed/atsea-db:mssql
+    ```
 
 1. Check to make sure the services are up and running.
 
-```bash
-$ docker service ps $(docker service ls -q)
+    ```bash
+    $ docker service ps $(docker service ls -q)
 
-ID                  NAME                IMAGE                              NODE                DESIRED STATE       CURRENT STATE               ERROR               PORTS
-8tw90grd8kli        atsea_appserver.1   mikegcoleman/atsea_appserver:1.0   node1               Running             Running abouta minute ago
-wh77n4p6osx5        atsea_database.1    sixeyed/atsea-db:mssql             win0001BD           Running             Running abouta minute ago                       *:30165->1433/tcp
-```
+    ID                  NAME                IMAGE                              NODE                DESIRED STATE       CURRENT STATE               ERROR               PORTS
+    8tw90grd8kli        atsea_appserver.1   mikegcoleman/atsea_appserver:1.0   node1               Running             Running abouta minute ago
+    wh77n4p6osx5        atsea_database.1    sixeyed/atsea-db:mssql             win0001BD           Running             Running abouta minute ago                       *:30165->1433/tcp
+    ```
 
-When but services have a current state of `running` move on to the next step.
+    When but services have a current state of `running` move on to the next step.
 
 1. Click the `8080` at the top of the screen to verify your application is running.
 
