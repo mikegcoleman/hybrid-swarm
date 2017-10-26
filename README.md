@@ -412,20 +412,25 @@ networks:
 
 Before we can deploy via the compose file, we'll need to remove our existing application. 
 
+1. Remove the existing services
+
+    ```bash
+    $ docker service rm appserver
+
+    appserver
+
+    $ docker service rm database
+
+    database
+    
+    ```
+
 1. Remove the existing network
 
     ```bash
     $ docker network rm atsea
 
     atsea
-    ```
-1. Remove the existing services
-
-    ```bash
-    $ docker service rm appserver
-
-    $ docker service rm database
-    
     ```
 
     Swarm offers us the `stack` primative to represent an application. A `stack` is a set of resources that are deployed together to represent an application. In the following steps we'll deploy our AtSea stack using the compose file. 
@@ -435,6 +440,11 @@ Before we can deploy via the compose file, we'll need to remove our existing app
     ```bash
     $ git clone https://github.com/mikegcoleman/hybrid-swarm.git
 
+    Cloning into 'hybrid-swarm'...
+    remote: Counting objects: 54, done.
+    remote: Compressing objects: 100% (25/25), done.
+    remote: Total 54 (delta 16), reused 54 (delta 16), pack-reused 0
+    Unpacking objects: 100% (54/54), done.
     ```
 
     1. Change into the `hybrid-swarm` directory
@@ -447,23 +457,35 @@ Before we can deploy via the compose file, we'll need to remove our existing app
 
     ```bash
     $ docker stack deploy -c docker-compose.yaml atsea
+    
+    Creating network atsea_atsea
+    Creating service atsea_database
+    Creating service atsea_appserver
     ```
 
     `-c` specified which file should be used to deploy the stack
     `atsea` is the name of our stack
 
+    > Notice that even though our network was listed last in our compose file, it was created first. Swarm knows that the two services need to connect to the network, so it's created first to allow this to happen
+
     1. List the services
 
     ```bash
-    $ docker servie ls
+    $ docker service ls
 
+    ID                  NAME                MODE                REPLICAS            IMAGE                              PORTS
+    miy9k6siatm1        atsea_appserver     replicated          1/1                 mikegcoleman/atsea_appserver:1.0   *:8080->8080/tcp
+    8tqlpvq8ewf0        atsea_database      replicated          1/1                 sixeyed/atsea-db:mssql
     ```
 
     1. Check to make sure the services are up and running.
 
     ```bash
-    $ docker service ps atsea
+    $ docker service ps $(docker service ls -q)
 
+    ID                  NAME                IMAGE                              NODE                DESIRED STATE       CURRENT STATE               ERROR               PORTS
+    8tw90grd8kli        atsea_appserver.1   mikegcoleman/atsea_appserver:1.0   node1               Running             Running abouta minute ago
+    wh77n4p6osx5        atsea_database.1    sixeyed/atsea-db:mssql             win0001BD           Running             Running abouta minute ago                       *:30165->1433/tcp
     ```
 
     When but services have a current state of `running` move on to the next step.
