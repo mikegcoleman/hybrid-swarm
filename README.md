@@ -251,7 +251,7 @@ This workshop cannot possibly cover all these topics, but we will cover several 
     4xw1kl3a9t24        hostname.5          dockersamples/linux-hostname:latest   node1               Running             Running 2 minutes ago
     ```
 
-    Notice the tasks have been spread  between `node` and `node2`
+    Notice the tasks have been spread  between `node1` and `node2`
 
 1. Another feature of swarm is load balancing. Incoming requests will balanced between the nodes in the cluster using IPVS. Issue multple curl commands to the service to see this in action:
 
