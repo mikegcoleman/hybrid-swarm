@@ -265,11 +265,21 @@ This workshop cannot possibly cover all these topics, but we will cover several 
 
     Notice that each request is serviced by a different container running in the cluster. Feel free to list the running containers on each of the two Linux nodes to verify that the host name displayed above match the containers IDs of the running tasks.
 
+1. To avoid a port conflict later in the lab, remove the `hostanme` service
+
+    ```bash
+    $ docker service rm hostname
+
+    hostname
+    ```
+
 ## Deploying a Multi-OS Application with Docker Swarm
 
-1. Move to `node1`
+Up until this point we have only deployed a single service application, and that application was only running on Linux. In this next section we'll deploy a two service application, with one service (a Java-based web front end) running on Linux and the other service (a Microsoft SQL Server database) running on Windows.
 
-1. Create an overlay network for the application
+1. Make sure you're on  `node1`
+
+1. We need to create an overlay network enable communication between the services.
 
     ```bash
     $ docker network create -d overlay atsea
@@ -277,17 +287,17 @@ This workshop cannot possibly cover all these topics, but we will cover several 
     foqztzic1x95kiuq9cuqwuldi
     ```
 
-3. Deploy the database service
+1. Deploy the database service
 
-    ```
+    ```bash
     $ docker service create \
-      --name database \
-      --endpoint-mode dnsrr \
-      --network atsea \
-      --publish mode=host,target=1433 \
-      --detach=true \
+    --name database \
+    --endpoint-mode dnsrr \
+    --network atsea \
+    --publish mode=host,target=1433 \
+    --detach=true \
     sixeyed/atsea-db:mssql
-    
+
     ywlkfxw2oim67fuf9tue7ndyi
     ```
     The service is created with the following parameters:
@@ -299,46 +309,50 @@ This workshop cannot possibly cover all these topics, but we will cover several 
     * `--detach`: Runs the service in the background
     * Our service is based off the image `sixeyed/atsea-db:mssql`
 
-4. Check the status of your service
+    > Note: Even though this is a Windows-based service we still issued the command from our Linux manager. As noted before all commands against the Swarm need to be issued from a manager regardless of the underlying OS of the service.
+    >
+    > Note: We didn't have to tell Swarm explicitly to schedule the service on to a Windows worker, that was automatically handled by our manager node. 
 
-    ```
+1. Check the status of your service
+
+    ```bash
     $ docker service ps database
-    
+
     ID                  NAME                IMAGE                          NODE                DESIRED STATE       CURRENT STATE      ERROR               PORTS
     rgwtocu21j0f        database.1          sixeyed/atsea-db:mssql   win00003R           Running             Running 3 minutesago
     ```
 
     > Note: Keep checking the status of the service until the `CURRENT STATE` is running. This usually takes 2-3 minutes
 
-5. Start the web front-end service
+1. Start the web front-end service
 
-    ```
+    ```bash
     $ docker service create \
     --publish 8080:8080 \
     --network atsea \
     --name appserver \
     --detach=true \
-    mikegcoleman/atsea_appserver:1.0
-    
+    dockersamples/atsea_appserver:1.0
+
     tqvr2cxk31tr0ryel5ey4zmwr
     ```
 
-6. List all the services running on your host
+1. List all the services running on your host
 
-    ```
+    ```bash
     $ docker service ls
-    
+
     ID                  NAME                MODE                REPLICAS            IMAGE                               PORTS
     tqvr2cxk31tr        appserver           replicated          1/1                 dockersamples/atsea-appserver:1.0   *:8080->8080/
     tcp
     xkm68h7z3wsu        database            replicated          1/1                 sixeyed/atsea-db:mssql
     ```
 
-7. Make sure both services are up and running (check the `Current State`)
+1. Make sure both services are up and running (check the `Current State`)
 
-    ```
+    ```bash
     $ docker service ps $(docker service ls -q)
-    
+
     ID                  NAME                IMAGE                               NODE                DESIRED STATE       CURRENT STATE
                 ERROR               PORTS
     jhetafd6jd7u        database.1          sixeyed/atsea-db:mssql              win00003R           Running             Running 3 min
@@ -347,19 +361,18 @@ This workshop cannot possibly cover all these topics, but we will cover several 
     utes ago
     ```
 
-8. Visit the running website by clicking the `8080` at the top of the PWD screen.
+1. Visit the running website by clicking the `8080` at the top of the PWD screen.
 
-We've successfully deployed our application. One thing to note is that we did not have to tell Swarm to put the database on the Windows node or the Java webserver on the Linux node. It was able to sort that out by itself. 
+> Note: Our application code knows nothing about our networking code. The only thing it knows is that the database hostname is going to be `database`. So in our application code database connection string looks like this:
+>
+>   ```bash
+>   jdbc:sqlserver://database;user=MyUserName;password=*****;
+>   ```
+>
+> So long as the database service is started with the name `database` and is on the same Swarm network, the two services can talk. This is service discovery at work in Docker swam
 
-Another key point is that our application code knows nothing about our networking code. The only thing it knows is that the database hostname is going to be `database`. So in our application code database connection string looks like this;
 
-```
-jdbc:sqlserver://database;user=MyUserName;password=*****;
-```
-
-So long as the database service is started with the name `database` and is on the same Swarm network, the two services can talk. 
-
-### Upgrades and Rollback
+## Upgrades and Rollback
 
 A common scenario is the need to upgrade an application or application component. In this section we are going to unsuccessfully attempt to ugrade the web front-end. We'll rollback from that attempt, and then perform a successful upgrade.
 
@@ -464,7 +477,7 @@ A common scenario is the need to upgrade an application or application component
 
 10. Once the status reports back "Running xx seconds", reload website the website once again to verify that the new version has been deployed
 
-### Scale the front end
+## Scale the front end
 
 The new update has really increased traffic to the site. As a result we need to scale our web front end out. This is done by issuing a `docker service update` and specifying the number of replicas to deploy. 
 
@@ -503,7 +516,7 @@ Docker is starting up 5 new instances of the appserver, and is placing them acro
 
 When all 6 nodes are running, move on to the next step. 
 
-### Failure and recovery
+## Failure and recovery
 The next exercise simulates a node failure. When a node fails the containers that were running there are, of course, lost as well. Swarm is constantly monitoring the state of the cluster, and when it detects an anomoly it attemps to bring the cluster back in to compliance. 
 
 In it's current state, Swarm expects there to be six instances of the appserver. When the node "fails" thre of those instances will go out of service. 
