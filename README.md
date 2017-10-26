@@ -124,13 +124,11 @@ The service construct provides a host of useful features including:
 * Layer 4 and layer 7 routing meshes
 * Desired state reconciliation
 * Service discovery
-* Helthchecks
+* Healthchecks
 * Upgrades and rollback
 * Scaling
 
-This workshop cannot possibly cover all these topics, but will address look at load bala.
-
-This lab will deploy a two service application.  The application features a Java-based web front end running on Linux, and a Microsoft SQL server running on Windows.
+This workshop cannot possibly cover all these topics, but we will cover several of them. 
 
 1. Let's start by creating our first service:
 
@@ -265,8 +263,8 @@ This lab will deploy a two service application.  The application features a Java
     Served by host: fd1e67aaf7dd
     ```
 
-    Notice that each request is serviced by a different container running in the cluster. Feel free to list the running containers on each of the two Linux nodes to verify that the host name displayed above match the containers IDs of the running tasks. 
-    
+    Notice that each request is serviced by a different container running in the cluster. Feel free to list the running containers on each of the two Linux nodes to verify that the host name displayed above match the containers IDs of the running tasks.
+
 ## Deploying a Multi-OS Application with Docker Swarm
 
 1. Move to `node1`
