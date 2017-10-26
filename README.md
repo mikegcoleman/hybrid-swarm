@@ -382,8 +382,94 @@ To allow complex applications stacks to be rolled out easily Docker features com
 
 In this section we'll redeploy our application using a Docker compose file.
 
-1. Remove the ex
+Below is our Docker compose file. You'll notice the syntax is easy to interpret since it matches command line parameters pretty closely. 
 
+    ```yaml
+    version: "3.2"
+
+    services:
+
+    database:
+        image: sixeyed/atsea-db:mssql
+        ports:
+        - mode: host
+            target: 1433
+        networks:
+        - atsea
+        deploy:
+        endpoint_mode: dnsrr
+
+    appserver:
+        image: mikegcoleman/atsea_appserver:1.0
+        ports:
+        - target: 8080
+            published: 8080
+        networks:
+        - atsea
+
+    networks:
+        atsea:
+    ```
+
+Before we can deploy via the compose file, we'll need to remove our existing application. 
+
+1. Remove the existing network
+
+    ```bash
+    $ docker network rm atsea
+
+    atsea
+    ```
+1. Remove the existing services
+
+    ```bash
+    $ docker service rm appserver
+
+    $ docker service rm database
+    
+    ```
+
+    Swarm offers us the `stack` primative to represent an application. A `stack` is a set of resources that are deployed together to represent an application. In the following steps we'll deploy our AtSea stack using the compose file. 
+
+    1. Clone the workshop repo onto `node1`
+
+    ```bash
+    $ git clone https://github.com/mikegcoleman/hybrid-swarm.git
+
+    ```
+
+    1. Change into the `hybrid-swarm` directory
+
+    ```
+    $ cd hybrid-swarm
+    ```
+
+    1. Deploy the application stack using the compose file
+
+    ```bash
+    $ docker stack deploy -c docker-compose.yaml atsea
+    ```
+
+    `-c` specified which file should be used to deploy the stack
+    `atsea` is the name of our stack
+
+    1. List the services
+
+    ```bash
+    $ docker servie ls
+
+    ```
+
+    1. Check to make sure the services are up and running.
+
+    ```bash
+    $ docker service ps atsea
+
+    ```
+
+    When but services have a current state of `running` move on to the next step.
+
+    1. Click the `8080` at the top of the screen to verify your application is running.
 
 ## Upgrades and Rollback
 
