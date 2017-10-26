@@ -448,7 +448,7 @@ Before we can deploy via the compose file, we'll need to remove our existing app
 
 1. Change into the `hybrid-swarm` directory
 
-    ```
+    ```bash
     $ cd hybrid-swarm
     ```
 
@@ -513,11 +513,11 @@ A common scenario is the need to upgrade an application or application component
 
     > Notice that our service name is prepended with the name of our stack `atsea_appserver`
 
-3. Check on the status of the upgrade
+1. Check on the status of the upgrade
 
-    ```
+    ```bash
     $ docker service ps atsea_appserver
-    
+
     ID                  NAME                IMAGE                               NODE                DESIRED STATE       CURRENT STATE
                         ERROR                              PORTS
     pjt4g23r0oo1        appserver.1         mikegcoleman/atsea-appserver:2.0   node1               Running             Starting less
@@ -529,11 +529,11 @@ A common scenario is the need to upgrade an application or application component
 
     Clearly there is some issue, as the containers are failing to start. 
 
-4. Check on the satus of the update
+1. Check on the satus of the update
 
-    ```
+    ```bash
     $ docker service inspect -f '{{json .UpdateStatus}}' atsea_appserver | jq
-    
+
     {
       "State": "paused",
       "StartedAt": "2017-10-14T00:38:30.188743311Z",
@@ -545,9 +545,9 @@ A common scenario is the need to upgrade an application or application component
 
     In the case of failed upgrade, Swarm makes it easy to recover. Simply issue the `--rollback` command to the service. 
 
-5. Roll the service back to the original version
+1. Roll the service back to the original version
 
-    ```
+    ```bash
     $ docker service update \
     --rollback \
     --detach=true \
@@ -567,11 +567,11 @@ A common scenario is the need to upgrade an application or application component
     }
     ```
 
-6. Check on the status of the service
+1. Check on the status of the service
 
-    ```
+    ```bash
     $ docker service ps atsea_appserver
-    
+
     ID                  NAME                IMAGE                               NODE                DESIRED STATE       CURRENT STATE                 ERROR      PORTS
     yoswxm44q9vg        appserver.1         mikegcoleman/atsea_appserver:1.0    node2               Running             Running 11 seconds ago
     lacfi5xiu6e7         \_ appserver.1     mikegcoleman/atsea-appserver:2.0   node1               Shutdown            Shutdown 25 seconds ago
@@ -582,13 +582,13 @@ A common scenario is the need to upgrade an application or application component
 
     The top line shows the service is back on the `1.0` version, and running. 
 
-7. Visit the website to makes sure it's running
+1. Visit the website to makes sure it's running
 
     That was a simulated upgrade failure and rollback. Next the service will be successfully upgraded to version 3 of the app. 
 
-8. Upgrade to version 3
+1. Upgrade to version 3
 
-    ```
+    ```bash
     $ docker service update \
     --image mikegcoleman/atsea_appserver:3.0 \
     --update-failure-action pause \
@@ -598,11 +598,11 @@ A common scenario is the need to upgrade an application or application component
     atsea_appserver
     ```
 
-9. Check the status of the upgrade
+1. Check the status of the upgrade
 
-    ```
+    ```bash
     $ docker service ps atsea_appserver
-    
+
     ID                  NAME                IMAGE                               NODEDESIRED STATE       CURRENT STATE             ERROR                              PORTS
     ytygwmyhumrt        appserver.1         mikegcoleman/atsea-appserver:3.0   node1Running             Running 29 seconds ago
     zjkmbjw7u8e0         \_ appserver.1     mikegcoleman/atsea_appserver:1.0    node1Shutdown            Shutdown 47 seconds ago
@@ -610,28 +610,28 @@ A common scenario is the need to upgrade an application or application component
     u6wd7wje82zn         \_ appserver.1     mikegcoleman/atsea-appserver:2.0   node1Shutdown            Failed 2 minutes ago      "task: non-zero exit (143): do…"
     ```
 
-10. Once the status reports back "Running xx seconds", reload website the website once again to verify that the new version has been deployed
+1. Once the status reports back "Running xx seconds", reload website the website once again to verify that the new version has been deployed
 
 ## Scale the front end
 
-The new update has really increased traffic to the site. As a result we need to scale our web front end out. This is done by issuing a `docker service update` and specifying the number of replicas to deploy. 
+The new update has really increased traffic to the site. As a result we need to scale our web front end out. This is done by issuing a `docker service update` and specifying the number of replicas to deploy.
 
 1. Scale to 6 replicas of the web front-end
 
-    ```
+    ```bash
     $  docker service update \
     --replicas=6 \
     --detach=true \
     atsea_appserver
-    
+
     atsea_appserver
     ```
 
-2. Check the status of the update
+1. Check the status of the update
 
-    ```
+    ```bash
     $ docker service ps atsea_appserver
-    
+
     ID                  NAME                IMAGE                               NODE                DESIRED STATE       CURRENT STATE             ERROR
       PORTS
     vfbzj3axoays        appserver.1         mikegcoleman/atsea-appserver:3.0   node1               Running             Running 2 minutes ago
@@ -652,23 +652,25 @@ Docker is starting up 5 new instances of the appserver, and is placing them acro
 When all 6 nodes are running, move on to the next step.
 
 ## Failure and recovery
-The next exercise simulates a node failure. When a node fails the containers that were running there are, of course, lost as well. Swarm is constantly monitoring the state of the cluster, and when it detects an anomoly it attemps to bring the cluster back in to compliance. 
+The next exercise simulates a node failure. When a node fails the containers that were running there are, of course, lost as well. Swarm is constantly monitoring the state of the cluster, and when it detects an anomoly it attemps to bring the cluster back in to compliance.
 
 In it's current state, Swarm expects there to be six instances of the appserver. When the node "fails" thre of those instances will go out of service. 
 
 1. Putting a node into *drain* mode forces it to stop all the running containers it hosts, as well as preventing it from running any additional containers. 
 
-    ```
+    ```bash
     $ docker node update \
     --availability=drain \
     node2
+
+    node2
     ```
 
-2. Check the status of the service
+1. Check the status of the service
 
-    ```
+    ```bash
     $ docker service ps atsea_appserver
-    
+
     ID                  NAME                IMAGE                               NODE                DESIRED STATE       CURRENT STATE             ERROR  PORTS
     vfbzj3axoays        appserver.1         mikegcoleman/atsea-appserver:3.0   node1               Running             Running 8 minutes ago
     yoswxm44q9vg         \_ appserver.1     mikegcoleman/atsea_appserver:1.0    node2               Shutdown            Shutdown 8 minutes ago
@@ -687,11 +689,11 @@ In it's current state, Swarm expects there to be six instances of the appserver.
 
     The output above shows the containers that were running on `node2` have been shut down and are being restarted on `node1`
 
-3. List the status of our services
+1. List the status of our services
 
-    ```
+    ```bash
     $ docker service ls
-    
+
     ID                  NAME                MODE                REPLICAS            IMAGE                               PORTS
     qbeqlc6v0g0z        appserver           replicated          6/6                 mikegcoleman/atsea-appserver:3.0   *:8080->8080/tcps3luy288gn9l        
     database            replicated          1/1                 sixeyed/atsea-db:mssql
