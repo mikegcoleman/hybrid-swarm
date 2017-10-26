@@ -4,7 +4,7 @@
 
 ## What is "Orchestration"
 
-If you heard about containers you've probably heard about orchstration as well. Container orchestrators, such as Docker Swarm and Kubernetes, provide a ton of functionality around managing and deploying containerized applications. But the two most fundamental things they do are clustering and scheduling (that's not all they do by a long shot, but they are arguably the two most important fuctions).
+If you heard about containers you've probably heard about orchestration as well. Container orchestrators, such as Docker Swarm and Kubernetes, provide a ton of functionality around managing and deploying containerized applications. But the two most fundamental things they do are clustering and scheduling (that's not all they do by a long shot, but they are arguably the two most important fuctions).
 
 Clustering is the concept of taking a group of machines and treating them as a single computing resource. These machines are capable of accepting any workload becaues they all offer the same capabilities. These clustered machines don't have to be running on the same infrastructure - they could be a  mix of bare metal and VMs for instance.
 
@@ -16,7 +16,7 @@ This lab will start with the deployment of a 3 node Docker Swarm cluster.
 
 ## Build your cluster
 
-1. In your broswer navigate to [Play with Docker](https://dockercon.play-with-docker.com)
+1. In your browser navigate to [Play with Docker](https://dockercon.play-with-docker.com)
 
 1. In the PWD interface click `+ Add new instance` to instantiate a linux node
 
@@ -363,7 +363,7 @@ Up until this point we have only deployed a single service application, and that
     utes ago
     ```
 
-1. Visit the running website by clicking the `8080` at the top of the PWD screen. The images being displayed on the web site are actually pulled from the SQL Server database. If they are displayed correctly then your app is fuctioning as expected. 
+1. Visit the running website by clicking the `8080` at the top of the PWD screen. The images being displayed on the web site are actually pulled from the SQL Server database. If they are displayed correctly then your app is functioning as expected. 
 
 > Note: Our application code knows nothing about our networking code. The only thing it knows is that the database hostname is going to be `database`. So in our application code database connection string looks like this:
 >
@@ -377,7 +377,7 @@ Up until this point we have only deployed a single service application, and that
 
 In the previous steps we created our network and services manually. In reality we want everything to be as automated and reproducible as possible. Manual steps, of course, increase the possiblity of errors. 
 
-To allow complex applications stacks to be rolled out easily Docker features compose files. Compose files are simply yaml files that provide a blueprint for an aplication including its services, networks, secrets, and just about any other Docker primative it may need. 
+To allow complex applications stacks to be rolled out easily Docker features compose files. Compose files are simply yaml files that provide a blueprint for an application including its services, networks, secrets, and just about any other Docker primitive it may need. 
 
 In this section we'll redeploy our application using a Docker compose file.
 
@@ -432,7 +432,7 @@ Before we can deploy via the compose file, we'll need to remove our existing app
     atsea
     ```
 
-    Swarm offers us the `stack` primative to represent an application. A `stack` is a set of resources that are deployed together to represent an application. In the following steps we'll deploy our AtSea stack using the compose file. 
+    Swarm offers us the `stack` primitive to represent an application. A `stack` is a set of resources that are deployed together to represent an application. In the following steps we'll deploy our AtSea stack using the compose file. 
 
 1. Clone the workshop repo onto `node1`
 
@@ -487,7 +487,7 @@ Before we can deploy via the compose file, we'll need to remove our existing app
     wh77n4p6osx5        atsea_database.1    sixeyed/atsea-db:mssql             win0001BD           Running             Running abouta minute ago                       *:30165->1433/tcp
     ```
 
-    When but services have a current state of `running` move on to the next step.
+    When the services have a current state of `running` move on to the next step.
 
 1. Click the `8080` at the top of the screen to verify your application is running.
 
@@ -529,7 +529,7 @@ A common scenario is the need to upgrade an application or application component
 
     Clearly there is some issue, as the containers are failing to start. 
 
-1. Check on the satus of the update
+1. Check on the status of the update
 
     ```bash
     $ docker service inspect -f '{{json .UpdateStatus}}' atsea_appserver | jq
@@ -652,9 +652,9 @@ Docker is starting up 5 new instances of the appserver, and is placing them acro
 When all 6 nodes are running, move on to the next step.
 
 ## Failure and recovery
-The next exercise simulates a node failure. When a node fails the containers that were running there are, of course, lost as well. Swarm is constantly monitoring the state of the cluster, and when it detects an anomoly it attemps to bring the cluster back in to compliance.
+The next exercise simulates a node failure. When a node fails the containers that were running there are, of course, lost as well. Swarm is constantly monitoring the state of the cluster, and when it detects an anomaly it attemps to bring the cluster back in to compliance.
 
-In it's current state, Swarm expects there to be six instances of the appserver. When the node "fails" thre of those instances will go out of service. 
+In it's current state, Swarm expects there to be six instances of the appserver. When the node "fails" three of those instances will go out of service. 
 
 1. Putting a node into *drain* mode forces it to stop all the running containers it hosts, as well as preventing it from running any additional containers. 
 
