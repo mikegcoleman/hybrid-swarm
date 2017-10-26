@@ -165,7 +165,7 @@ This workshop cannot possibly cover all these topics, but we will cover several 
 
     ```bash
     $ docker service ps hostname
-    
+
     ID                  NAME                IMAGE                                 NODE  DESIRED STATE       CURRENT STATE            ERROR               PORTS
     x47pe8ov8wro        hostname.1          dockersamples/linux-hostname:latest   node1  Running             Running 43 seconds ago
     ````
@@ -190,10 +190,8 @@ This workshop cannot possibly cover all these topics, but we will cover several 
     ```bash
     $ docker container ps 
 
-    CONTAINER ID        IMAGE                                 COMMAND             CREATED             STATUS              PORTS
-         NAMES
-    b738b7709d4b        dockersamples/linux-hostname:latest   "/hello-go"         6 minutes ago       Up 6 minutes        8080/tcp
-         hostname.1.x47pe8ov8wrov69zv3zajho27
+    CONTAINER ID        IMAGE                                 COMMAND             CREATED             STATUS              PORTS     NAMES
+    b738b7709d4b        dockersamples/linux-hostname:latest   "/hello-go"         6 minutes ago       Up 6 minutes        8080/tcp      hostname.1.x47pe8ov8wrov69zv3zajho27
     ```
 
     Notice that the `CONTAINER ID` matches the hostname displayed in the previous step.
