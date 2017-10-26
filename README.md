@@ -556,7 +556,18 @@ A common scenario is the need to upgrade an application or application component
     atsea_appserver
     ```
 
- 6. Check on the status of the service
+1. Check the status of the update
+    ```bash
+    $ docker service inspect -f '{{json .UpdateStatus}}' atsea_appserver | jq
+
+    {
+    "State": "rollback_started",
+    "StartedAt": "2017-10-26T08:51:03.644872494Z",
+    "Message": "manually requested rollback"
+    }
+    ```
+
+6. Check on the status of the service
 
     ```
     $ docker service ps atsea_appserver
