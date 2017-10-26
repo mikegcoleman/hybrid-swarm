@@ -54,13 +54,12 @@ This lab will start with the deployment of a 3 node Docker Swarm cluster.
 1. Switch to the Windows node and paste the same command at the Powershell prompt
 
     ```bash
-    PS C:\> docker swarm join --token SWMTKN-1-53ao1ihu684vpcpjuf332bi4et27qiwxajefyqryyj4o0indm7-b2zc5ldudkxcmf6kcncft8t12 192.168.0
-    .13:2377
+    PS C:\> docker swarm join --token SWMTKN-1-53ao1ihu684vpcpjuf332bi4et27qiwxajefyqryyj4o0indm7-b2zc5ldudkxcmf6kcncft8t12 192.168.0.13:2377
 
     This node joined a swarm as a worker.
     ```
 
-    The three nodes have now been clustered into a single Docker swarm. An important thing to note is that clusters can be made up of Linux nodes, Windows nodes, or a combination of both. 
+    The three nodes have now been clustered into a single Docker swarm. An important thing to note is that clusters can be made up of Linux nodes, Windows nodes, or a combination of both.
 
 1. Switch back to `node1`
 
@@ -75,7 +74,7 @@ This lab will start with the deployment of a 3 node Docker Swarm cluster.
     xflngp99u1r9pn7bryqbbrrvq     win000046           Ready               Active
     ```
 
-1. Commands against the swarm can only be issued from the manager node. Attempting to run the above command from the `Windows` 
+1. Commands against the swarm can only be issued from the manager node. Attempting to run the above command from the `Windows` node.
 
     ```bash
     PS C:\ docker node ls
