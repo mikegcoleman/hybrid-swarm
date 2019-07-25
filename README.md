@@ -483,8 +483,8 @@ Before we can deploy via the compose file, we'll need to remove our existing app
     $ docker service ps $(docker service ls -q)
 
     ID                  NAME                IMAGE                              NODE                DESIRED STATE       CURRENT STATE               ERROR               PORTS
-    8tw90grd8kli        atsea_appserver.1   mikegcoleman/atsea_appserver:1.0   node1               Running             Running abouta minute ago
-    wh77n4p6osx5        atsea_database.1    sixeyed/atsea-db:mssql             win0001BD           Running             Running abouta minute ago                       *:30165->1433/tcp
+    8tw90grd8kli        atsea_appserver.1   mikegcoleman/atsea_appserver:1.0   node1               Running             Running about a minute ago
+    wh77n4p6osx5        atsea_database.1    sixeyed/atsea-db:mssql             win0001BD           Running             Running about a minute ago                       *:30165->1433/tcp
     ```
 
     When but services have a current state of `running` move on to the next step.
